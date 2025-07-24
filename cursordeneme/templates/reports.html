@@ -1,0 +1,189 @@
+{% extends "base.html" %}
+
+{% block title %}Raporlar - {{ club_name }}{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+    <h1 class="h2"><i class="fas fa-chart-bar"></i> Raporlar</h1>
+    <a href="{{ url_for('index') }}" class="btn btn-secondary">
+        <i class="fas fa-arrow-left"></i> Ana Sayfa
+    </a>
+</div>
+<!-- İstatistik Kartları -->
+<div class="row mb-4">
+    <div class="col-md-3">
+        <div class="stats-card">
+            <div class="stats-number">{{ member_stats.total_members }}</div>
+            <div class="stats-label">Toplam Üye</div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="stats-card">
+            <div class="stats-number">{{ member_stats.active_members }}</div>
+            <div class="stats-label">Aktif Üye</div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="stats-card">
+            <div class="stats-number">{{ member_stats.admin_members }}</div>
+            <div class="stats-label">Yönetici</div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="stats-card">
+            <div class="stats-number">{{ member_stats.total_points }}</div>
+            <div class="stats-label">Toplam Puan</div>
+        </div>
+    </div>
+</div>
+<!-- Grafikler alta taşındı ve küçültüldü -->
+<div class="row mt-4">
+    <div class="col-md-4 mb-3">
+        <div class="card small-graph-card">
+            <div class="card-header"><b>Aylık Katılım Grafiği</b></div>
+            <div class="card-body"><canvas id="attendanceMonthlyChart" style="height:180px;"></canvas></div>
+        </div>
+    </div>
+    <div class="col-md-4 mb-3">
+        <div class="card small-graph-card">
+            <div class="card-header"><b>Puan Dağılımı (Pasta Grafik)</b></div>
+            <div class="card-body"><canvas id="pointsPieChart" style="height:180px;"></canvas></div>
+        </div>
+    </div>
+    <div class="col-md-4 mb-3">
+        <div class="card small-graph-card">
+            <div class="card-header"><b>Etkinlik Performans Analizi</b></div>
+            <div class="card-body"><canvas id="eventPerformanceChart" style="height:180px;"></canvas></div>
+        </div>
+    </div>
+</div>
+<style>
+.small-graph-card { min-height: 260px; max-width: 100%; }
+.stats-card { background: #f8f9fa; border-radius: 8px; padding: 18px 10px; text-align: center; margin-bottom: 10px; }
+.stats-number { font-size: 2rem; font-weight: bold; }
+.stats-label { font-size: 1rem; color: #888; }
+</style>
+<!-- Detaylı Raporlar -->
+<div class="row mt-4">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="mb-0"><i class="fas fa-chart-line"></i> Detaylı Analiz</h5>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-4">
+                        <div class="text-center">
+                            <i class="fas fa-percentage fa-2x text-primary mb-2"></i>
+                            <h5>Katılım Oranı</h5>
+                            {% if member_stats.total_members > 0 %}
+                                <p class="h3 text-primary">
+                                    {{ "%.1f"|format((attendance_stats.unique_participants / member_stats.total_members) * 100) }}%
+                                </p>
+                            {% else %}
+                                <p class="h3 text-muted">0%</p>
+                            {% endif %}
+                            <small class="text-muted">Üyelerin etkinliklere katılım oranı</small>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="text-center">
+                            <i class="fas fa-calendar-check fa-2x text-success mb-2"></i>
+                            <h5>Etkinlik Başına Katılım</h5>
+                            {% if event_stats.total_events > 0 %}
+                                <p class="h3 text-success">
+                                    {{ "%.1f"|format(attendance_stats.total_attendances / event_stats.total_events) }}
+                                </p>
+                            {% else %}
+                                <p class="h3 text-muted">0</p>
+                            {% endif %}
+                            <small class="text-muted">Ortalama katılımcı sayısı</small>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="text-center">
+                            <i class="fas fa-star fa-2x text-warning mb-2"></i>
+                            <h5>Puan Dağılımı</h5>
+                            <p class="h3 text-warning">{{ member_stats.avg_points|int }}</p>
+                            <small class="text-muted">Ortalama üye puanı</small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- Dışa Aktarma -->
+<div class="row mt-4">
+    <div class="col-md-12">
+        <div class="card">
+            <div class="card-header"><b>Dışa Aktarma</b></div>
+            <div class="card-body">
+                <a href="/api/export/excel" class="btn btn-success me-2"><i class="fas fa-file-excel"></i> Excel Raporu</a>
+                <a href="/api/export/emails" class="btn btn-info me-2" id="exportEmailsBtn"><i class="fas fa-envelope"></i> E-posta Listesi</a>
+                <button class="btn btn-primary" id="sendMassMailBtn"><i class="fas fa-paper-plane"></i> Tüm Üyelere Mail Gönder</button>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+// Aylık Katılım Grafiği
+fetch('/api/report/attendance_monthly').then(r=>r.json()).then(data=>{
+    const ctx = document.getElementById('attendanceMonthlyChart').getContext('2d');
+    new Chart(ctx, {
+        type: 'bar',
+        data: {
+            labels: data.map(d=>d.month.substring(0,7)),
+            datasets: [{label:'Katılım',data:data.map(d=>d.count),backgroundColor:'#007bff'}]
+        },
+        options: {responsive:true}
+    });
+});
+// Puan Dağılımı Pasta Grafik
+fetch('/api/report/points_pie').then(r=>r.json()).then(data=>{
+    const ctx = document.getElementById('pointsPieChart').getContext('2d');
+    const labels = data.map(d => d.role);
+    const values = data.map(d => d.count);
+    new Chart(ctx, {
+        type: 'pie',
+        data: {
+            labels: labels,
+            datasets: [{data: values,backgroundColor:['#007bff','#28a745','#ffc107','#dc3545','#6c757d']}]
+        },
+        options: {responsive:true}
+    });
+});
+// Etkinlik Performans Analizi
+fetch('/api/report/event_performance').then(r=>r.json()).then(data=>{
+    const ctx = document.getElementById('eventPerformanceChart').getContext('2d');
+    new Chart(ctx, {
+        type: 'horizontalBar',
+        data: {
+            labels: data.map(d=>d.event),
+            datasets: [{label:'Katılım',data:data.map(d=>d.attendance),backgroundColor:'#17a2b8'}]
+        },
+        options: {responsive:true,indexAxis:'y'}
+    });
+});
+document.getElementById('sendMassMailBtn').onclick = function() {
+    fetch('/api/export/emails')
+      .then(resp => resp.json())
+      .then(data => {
+        if (data && data.emails && data.emails.length > 0) {
+          // Çok fazla e-posta varsa mailto limiti aşılabilir, uyarı verelim
+          if (data.emails.length > 100) {
+            alert('Çok fazla e-posta adresi var, mail uygulaması açılmayabilir!');
+          }
+          const mailto = 'mailto:' + data.emails.join(',');
+          window.location.href = mailto;
+        } else {
+          alert('Kayıtlı e-posta adresi bulunamadı.');
+        }
+      });
+};
+</script>
+{% endblock %} 

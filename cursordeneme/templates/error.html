@@ -1,0 +1,43 @@
+{% extends "base.html" %}
+
+{% block title %}Hata - {{ club_name }}{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card">
+                <div class="card-header bg-danger text-white">
+                    <h5 class="mb-0"><i class="fas fa-exclamation-triangle"></i> Hata Oluştu</h5>
+                </div>
+                <div class="card-body text-center">
+                    <i class="fas fa-bug fa-5x text-danger mb-4"></i>
+                    <h3>Bir hata oluştu</h3>
+                    <p class="lead text-muted">
+                        Üzgünüz, bir hata oluştu. Lütfen tekrar deneyin veya sistem yöneticisi ile iletişime geçin.
+                    </p>
+                    
+                    <div class="alert alert-info">
+                        <h6><i class="fas fa-info-circle"></i> Olası Nedenler:</h6>
+                        <ul class="list-unstyled mb-0">
+                            <li>• Veritabanı bağlantı sorunu</li>
+                            <li>• Geçersiz veri girişi</li>
+                            <li>• Sistem bakımı</li>
+                            <li>• Ağ bağlantı sorunu</li>
+                        </ul>
+                    </div>
+                    
+                    <div class="mt-4">
+                        <a href="{{ url_for('index') }}" class="btn btn-primary me-2">
+                            <i class="fas fa-home"></i> Ana Sayfa
+                        </a>
+                        <button onclick="history.back()" class="btn btn-secondary">
+                            <i class="fas fa-arrow-left"></i> Geri
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %} 

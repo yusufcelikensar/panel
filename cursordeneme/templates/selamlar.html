@@ -1,0 +1,61 @@
+{% extends "base.html" %}
+
+{% block title %}Selamlar - {{ club_name }}{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+    <h1 class="h2"><i class="fas fa-hand-wave"></i> Selamlar</h1>
+</div>
+
+<div class="row">
+    <div class="col-md-6">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="mb-0"><i class="fas fa-heart"></i> Hoş Geldiniz!</h5>
+            </div>
+            <div class="card-body">
+                <p class="lead">Girişimcilik Kulübü'ne hoş geldiniz! 🎉</p>
+                <p>Bu sayfa henüz geliştirme aşamasında. Yakında burada güzel özellikler olacak!</p>
+                <div class="alert alert-info">
+                    <i class="fas fa-info-circle"></i>
+                    <strong>İpucu:</strong> Sol menüden diğer sayfalara göz atabilirsiniz.
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-6">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="mb-0"><i class="fas fa-star"></i> Özellikler</h5>
+            </div>
+            <div class="card-body">
+                <ul class="list-unstyled">
+                    <li><i class="fas fa-check text-success"></i> Üye Yönetimi</li>
+                    <li><i class="fas fa-check text-success"></i> Etkinlik Takibi</li>
+                    <li><i class="fas fa-check text-success"></i> Yoklama Sistemi</li>
+                    <li><i class="fas fa-check text-success"></i> Bilet Satışı</li>
+                    <li><i class="fas fa-check text-success"></i> Raporlar</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row mt-4">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="mb-0"><i class="fas fa-comments"></i> Mesaj</h5>
+            </div>
+            <div class="card-body">
+                <div class="text-center">
+                    <h3>👋 Merhaba!</h3>
+                    <p class="text-muted">Girişimcilik Kulübü yönetim paneline hoş geldiniz.</p>
+                    <p>Bu sistem ile kulüp üyelerinizi ve etkinliklerinizi kolayca yönetebilirsiniz.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %} 

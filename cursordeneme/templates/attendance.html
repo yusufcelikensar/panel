@@ -1,0 +1,214 @@
+{% extends "base.html" %}
+
+{% block title %}Katılım Kaydet - {{ club_name }}{% endblock %}
+
+{% block content %}
+<!-- Toast Bildirimleri -->
+<div aria-live="polite" aria-atomic="true" class="position-relative">
+  <div id="toast-container" class="toast-container position-fixed top-0 end-0 p-3" style="z-index: 1080;">
+    {% with messages = get_flashed_messages(with_categories=true) %}
+      {% if messages %}
+        {% for category, message in messages %}
+          <div class="toast align-items-center text-bg-{{ 'danger' if category == 'error' else category }} border-0 mb-2" role="alert" aria-live="assertive" aria-atomic="true" data-bs-delay="5000">
+            <div class="d-flex">
+              <div class="toast-body">
+                {{ message }}
+              </div>
+              <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Kapat"></button>
+            </div>
+          </div>
+        {% endfor %}
+      {% endif %}
+    {% endwith %}
+  </div>
+</div>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  var toastElList = [].slice.call(document.querySelectorAll('.toast'));
+  toastElList.forEach(function(toastEl) {
+    var toast = new bootstrap.Toast(toastEl);
+    toast.show();
+  });
+});
+</script>
+<div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+    <h1 class="h2"><i class="fas fa-check-circle"></i> Katılım Kaydet</h1>
+    <a href="{{ url_for('index') }}" class="btn btn-secondary">
+        <i class="fas fa-arrow-left"></i> Ana Sayfa
+    </a>
+</div>
+
+<div class="row">
+    <div class="col-md-6">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="mb-0"><i class="fas fa-user-check"></i> Katılım Kaydı</h5>
+            </div>
+            <div class="card-body">
+                <form id="attendanceForm" method="POST">
+                    <div class="mb-3">
+                        <label for="member_search" class="form-label">Üye UID veya İsim *</label>
+                        <input type="text" class="form-control" id="member_search" name="member_search" autocomplete="off" required>
+                        <div class="form-text">Üyenin kartını okutun, UID (11 hane) veya ismini yazın. (En az 2 karakterde isim için öneri çıkar)</div>
+                        <div id="memberSuggestions" class="list-group position-absolute w-100" style="z-index:10;"></div>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="event_id" class="form-label">Etkinlik *</label>
+                        <select class="form-select" id="event_id" name="event_id" required>
+                            <option value="">Etkinlik seçin</option>
+                            {% for event in events %}
+                                <option value="{{ event.id }}" {% if selected_event_id and event.id|string == selected_event_id|string %}selected{% endif %}>
+                                    {{ event.name }} - {% if event.event_date %}{{ event.event_date.strftime('%d.%m.%Y') if event.event_date else event.event_date }}{% else %}Tarih belirsiz{% endif %}
+                                </option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    
+                    <button type="submit" class="btn btn-success w-100">
+                        <i class="fas fa-check-circle"></i> Katılımı Kaydet
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-6">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="mb-0"><i class="fas fa-info-circle"></i> Katılım Sistemi</h5>
+            </div>
+            <div class="card-body">
+                <div class="alert alert-success">
+                    <h6><i class="fas fa-star"></i> Puan Sistemi:</h6>
+                    <ul class="mb-0">
+                        <li>Her etkinlik katılımı: <strong>+10 puan</strong></li>
+                        <li>Puanlar otomatik olarak eklenir</li>
+                        <li>Aynı etkinliğe tekrar katılım kaydedilemez</li>
+                    </ul>
+                </div>
+                
+                <div class="alert alert-info">
+                    <h6><i class="fas fa-exclamation-triangle"></i> Önemli Notlar:</h6>
+                    <ul class="mb-0">
+                        <li>UID benzersiz olmalıdır</li>
+                        <li>Üye sistemde kayıtlı olmalıdır</li>
+                        <li>Etkinlik aktif olmalıdır</li>
+                        <li>Katılım kaydı geri alınamaz</li>
+                    </ul>
+                </div>
+                
+                <div class="alert alert-warning">
+                    <h6><i class="fas fa-lightbulb"></i> İpucu:</h6>
+                    <p class="mb-0">Hızlı katılım kaydı için üye kartını okutun ve etkinliği seçin.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Son Katılımlar -->
+<div class="row mt-4">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="mb-0"><i class="fas fa-history"></i> Son Katılımlar</h5>
+            </div>
+            <div class="card-body">
+                {% if recent_attendance %}
+                    <div class="table-responsive">
+                        <table class="table table-striped table-hover">
+                            <thead>
+                                <tr>
+                                    <th>Tarih</th>
+                                    <th>Üye</th>
+                                    <th>Etkinlik</th>
+                                    <th>İşlem</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for row in recent_attendance %}
+                                <tr>
+                                    <td>{{ row.timestamp.strftime('%d.%m.%Y %H:%M') if row.timestamp else '-' }}</td>
+                                    <td>{{ row.member_name }}</td>
+                                    <td>{{ row.event_name }}</td>
+                                    <td>
+                                        <form method="POST" action="{{ url_for('delete_attendance', member_id=row.member_id, event_id=row.event_id) }}" style="display:inline;">
+                                            <button type="submit" class="btn btn-sm btn-danger" onclick="return confirm('Katılım kaydını silmek ve puanı geri almak istediğinize emin misiniz?');">
+                                                <i class="fas fa-trash"></i> Sil
+                                            </button>
+                                        </form>
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                {% else %}
+                    <div class="text-center py-3">
+                        <i class="fas fa-history fa-2x text-muted mb-2"></i>
+                        <p class="text-muted">Henüz katılım kaydı bulunmuyor.</p>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}
+
+{% block scripts %}
+<script>
+// Autocomplete için örnek JS (API endpoint'iniz varsa oraya bağlayın)
+document.getElementById('member_search').addEventListener('input', function() {
+    const val = this.value.trim();
+    if(val.length < 2) { document.getElementById('memberSuggestions').innerHTML = ''; return; }
+    fetch(`/api/member_search?q=${encodeURIComponent(val)}`)
+        .then(r => r.json())
+        .then(data => {
+            let html = '';
+            data.forEach(m => {
+                html += `<button type='button' class='list-group-item list-group-item-action' data-uid='${m.uid}'>${m.name} <small class='text-muted'>(${m.uid})</small></button>`;
+            });
+            document.getElementById('memberSuggestions').innerHTML = html;
+        });
+});
+document.getElementById('memberSuggestions').addEventListener('click', function(e) {
+    // Her zaman en yakın butonun data-uid'sini al
+    var target = e.target;
+    if (target && !target.dataset.uid && target.closest('button')) {
+        target = target.closest('button');
+    }
+    if(target && target.dataset.uid) {
+        document.getElementById('member_search').value = target.dataset.uid;
+        this.innerHTML = '';
+    }
+});
+
+document.getElementById('member_search').addEventListener('keypress', function(e) {
+    if (e.key === 'Enter') {
+        e.preventDefault();
+        document.getElementById('event_id').focus();
+    }
+});
+
+document.getElementById('event_id').addEventListener('keypress', function(e) {
+    if (e.key === 'Enter') {
+        e.preventDefault();
+        document.querySelector('form').submit();
+    }
+});
+
+document.getElementById('attendanceForm').addEventListener('submit', function(e) {
+    var uid = document.getElementById('member_search').value.trim();
+    var eventId = document.getElementById('event_id').value;
+    if (!uid || !eventId) {
+        alert('Lütfen bir üye ve etkinlik seçin!');
+        e.preventDefault();
+    }
+});
+
+// --- AJAX ile Katılım Kaydet ---
+// (Buraya gerçek AJAX kodu eklenebilir, ama şu an submit engellenmemeli!)
+</script>
+{% endblock %} 

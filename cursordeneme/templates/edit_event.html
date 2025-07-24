@@ -1,0 +1,99 @@
+{% extends "base.html" %}
+
+{% block title %}Etkinlik Düzenle - {{ club_name }}{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+    <h1 class="h2"><i class="fas fa-calendar-edit"></i> Etkinlik Düzenle</h1>
+    <a href="{{ url_for('events') }}" class="btn btn-secondary">
+        <i class="fas fa-arrow-left"></i> Geri
+    </a>
+</div>
+
+<div class="row">
+    <div class="col-md-8">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="mb-0"><i class="fas fa-calendar"></i> Etkinlik Bilgileri</h5>
+            </div>
+            <div class="card-body">
+                <form method="POST">
+                    <div class="row">
+                        <div class="col-md-8 mb-3">
+                            <label for="name" class="form-label">Etkinlik Adı *</label>
+                            <input type="text" class="form-control" id="name" name="name" 
+                                   value="{{ event.name }}" required>
+                        </div>
+                        <div class="col-md-4 mb-3">
+                            <label for="event_date" class="form-label">Tarih *</label>
+                            <input type="date" class="form-control" id="event_date" name="event_date" 
+                                   value="{{ event.event_date.strftime('%Y-%m-%d') if event.event_date else '' }}" required>
+                        </div>
+                    </div>
+                    
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label for="location" class="form-label">Konum</label>
+                            <input type="text" class="form-control" id="location" name="location" 
+                                   value="{{ event.location or '' }}" placeholder="Etkinlik konumu">
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label for="category" class="form-label">Kategori</label>
+                            <select class="form-select" id="category" name="category">
+                                <option value="">Seçiniz</option>
+                                <option value="Konferans" {{ 'selected' if event.category == 'Konferans' else '' }}>Konferans</option>
+                                <option value="Workshop" {{ 'selected' if event.category == 'Workshop' else '' }}>Workshop</option>
+                                <option value="Seminer" {{ 'selected' if event.category == 'Seminer' else '' }}>Seminer</option>
+                                <option value="Sosyal Etkinlik" {{ 'selected' if event.category == 'Sosyal Etkinlik' else '' }}>Sosyal Etkinlik</option>
+                                <option value="Eğitim" {{ 'selected' if event.category == 'Eğitim' else '' }}>Eğitim</option>
+                                <option value="Diğer" {{ 'selected' if event.category == 'Diğer' else '' }}>Diğer</option>
+                            </select>
+                        </div>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="description" class="form-label">Açıklama</label>
+                        <textarea class="form-control" id="description" name="description" rows="4" 
+                                  placeholder="Etkinlik hakkında detaylı bilgi...">{{ event.description or '' }}</textarea>
+                    </div>
+                    
+                    <div class="d-flex justify-content-between">
+                        <a href="{{ url_for('events') }}" class="btn btn-secondary">
+                            <i class="fas fa-times"></i> İptal
+                        </a>
+                        <button type="submit" class="btn btn-primary">
+                            <i class="fas fa-save"></i> Güncelle
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-4">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="mb-0"><i class="fas fa-info-circle"></i> Etkinlik Bilgileri</h5>
+            </div>
+            <div class="card-body">
+                <div class="row mb-3">
+                    <div class="col-12">
+                        <strong>Etkinlik ID:</strong> {{ event.id }}
+                    </div>
+                </div>
+                <div class="row mb-3">
+                    <div class="col-12">
+                        <strong>Oluşturulma Tarihi:</strong><br>
+                        {{ event.event_date.strftime('%d.%m.%Y') if event.event_date else 'Belirtilmemiş' }}
+                    </div>
+                </div>
+                
+                <div class="alert alert-info">
+                    <h6><i class="fas fa-exclamation-triangle"></i> Not:</h6>
+                    <p class="mb-0">Etkinlik bilgileri güncellendikten sonra katılım kayıtları etkilenmez.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %} 

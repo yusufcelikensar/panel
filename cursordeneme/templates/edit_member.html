@@ -1,0 +1,213 @@
+{% extends "base.html" %}
+
+{% block title %}Üye Düzenle - {{ club_name }}{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+    <h1 class="h2"><i class="fas fa-user-edit"></i> Üye Düzenle</h1>
+    <a href="{{ url_for('members') }}" class="btn btn-secondary">
+        <i class="fas fa-arrow-left"></i> Geri
+    </a>
+</div>
+
+<div class="row">
+    <div class="col-md-8">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="mb-0"><i class="fas fa-user"></i> Üye Bilgileri</h5>
+            </div>
+            <div class="card-body">
+                <form method="POST">
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label for="name" class="form-label">Ad Soyad *</label>
+                            <input type="text" class="form-control" id="name" name="name" 
+                                   value="{{ member.name }}" required>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label for="uid" class="form-label">UID *</label>
+                            <input type="text" class="form-control" id="uid" name="uid" maxlength="11" 
+                                   value="{{ member.uid }}" required>
+                        </div>
+                    </div>
+                    
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label for="email" class="form-label">E-posta</label>
+                            <input type="email" class="form-control" id="email" name="email" 
+                                   value="{{ member.email or '' }}">
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label for="phone" class="form-label">Telefon</label>
+                            <input type="tel" class="form-control" id="phone" name="phone" 
+                                   value="{{ member.phone or '' }}">
+                        </div>
+                    </div>
+                    
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label for="department" class="form-label">Bölüm</label>
+                            <input type="text" class="form-control" id="department" name="department" 
+                                   value="{{ member.department or '' }}">
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label for="year" class="form-label">Sınıf</label>
+                            <select class="form-select" id="year" name="year">
+                                <option value="">Seçiniz</option>
+                                <option value="1" {{ 'selected' if member.year == 1 else '' }}>1. Sınıf</option>
+                                <option value="2" {{ 'selected' if member.year == 2 else '' }}>2. Sınıf</option>
+                                <option value="3" {{ 'selected' if member.year == 3 else '' }}>3. Sınıf</option>
+                                <option value="4" {{ 'selected' if member.year == 4 else '' }}>4. Sınıf</option>
+                            </select>
+                        </div>
+                    </div>
+                    
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label for="role" class="form-label">Rol</label>
+                            <select class="form-select" id="role" name="role">
+                                <option value="Aktif Üye" {{ 'selected' if member.role == 'Aktif Üye' else '' }}>Aktif Üye</option>
+                                <option value="Yönetici" {{ 'selected' if member.role == 'Yönetici' else '' }}>Yönetici</option>
+                                <option value="Üye" {{ 'selected' if member.role == 'Üye' else '' }}>Üye</option>
+                            </select>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label for="referrer_name" class="form-label">Referans Üye</label>
+                            <input type="text" class="form-control" id="referrer_name" name="referrer_name" autocomplete="off" placeholder="Referans üye ismiyle ara..." value="{{ member.referrer_name if member.referrer_name else '' }}">
+                            <input type="hidden" id="referred_by_member_id" name="referred_by_member_id" value="{{ member.referred_by_member_id if member.referred_by_member_id else '' }}">
+                            <div id="referrer_suggestions" class="list-group position-absolute w-100" style="z-index:10;"></div>
+                        </div>
+                    </div>
+                    
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">Mevcut Puan</label>
+                            <div class="form-control-plaintext">
+                                <span class="badge bg-warning text-dark fs-6">{{ member.points }}</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="interests" class="form-label">İlgi Alanları</label>
+                        <textarea class="form-control" id="interests" name="interests" rows="3" 
+                                  placeholder="Üyenin ilgi alanlarını yazın...">{{ member.interests or '' }}</textarea>
+                    </div>
+                    
+                    <div class="d-flex justify-content-between">
+                        <a href="{{ url_for('members') }}" class="btn btn-secondary">
+                            <i class="fas fa-times"></i> İptal
+                        </a>
+                        <button type="submit" class="btn btn-primary">
+                            <i class="fas fa-save"></i> Güncelle
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-4">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="mb-0"><i class="fas fa-info-circle"></i> Üye Bilgileri</h5>
+            </div>
+            <div class="card-body">
+                <div class="row mb-3">
+                    <div class="col-12">
+                        <strong>Üye ID:</strong> {{ member.id }}
+                    </div>
+                </div>
+                <div class="row mb-3">
+                    <div class="col-12">
+                        <strong>Üyelik Tarihi:</strong><br>
+                        {{ member.membership_date.strftime('%d.%m.%Y') if member.membership_date else 'Belirtilmemiş' }}
+                    </div>
+                </div>
+                <div class="row mb-3">
+                    <div class="col-12">
+                        <strong>Mevcut Puan:</strong><br>
+                        <span class="badge bg-warning text-dark fs-5">{{ member.points }}</span>
+                    </div>
+                </div>
+                
+                <div class="alert alert-info">
+                    <h6><i class="fas fa-exclamation-triangle"></i> Not:</h6>
+                    <p class="mb-0">Puan değişikliği sadece etkinlik katılımı ve bilet satışları ile otomatik olarak yapılır.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="card mt-4">
+    <div class="card-header">
+        <h5 class="mb-0"><i class="fas fa-coins"></i> Manuel Puan Ekle/Çıkar</h5>
+    </div>
+    <div class="card-body">
+        <form id="adjustPointsForm" action="/members/adjust_points" method="post" class="row g-3">
+            <input type="hidden" name="member_id" value="{{ member.id }}">
+            <div class="col-md-4">
+                <label for="point_value" class="form-label">Puan Miktarı</label>
+                <input type="number" class="form-control" name="point_value" id="point_value" min="1" required>
+            </div>
+            <div class="col-md-4">
+                <label for="point_reason" class="form-label">Açıklama</label>
+                <input type="text" class="form-control" name="point_reason" id="point_reason" placeholder="İsteğe bağlı">
+            </div>
+            <div class="col-md-4 d-flex align-items-end">
+                <button type="submit" name="action" value="add" class="btn btn-success me-2"><i class="fas fa-plus"></i> Puan Ekle</button>
+                <button type="submit" name="action" value="subtract" class="btn btn-danger"><i class="fas fa-minus"></i> Puan Çıkar</button>
+            </div>
+        </form>
+        <div id="adjustPointsResult" class="mt-2"></div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+{{ super() }}
+<script>
+$(function() {
+    $('#referrer_name').on('input', function() {
+        var query = $(this).val();
+        if (query.length < 2) {
+            $('#referrer_suggestions').empty();
+            return;
+        }
+        $.getJSON('/api/member_search', {q: query}, function(data) {
+            var list = '';
+            data.forEach(function(item) {
+                list += '<button type="button" class="list-group-item list-group-item-action" data-id="'+item.id+'">'+item.name+' ('+item.uid+')</button>';
+            });
+            $('#referrer_suggestions').html(list).show();
+        });
+    });
+    $('#referrer_suggestions').on('click', 'button', function() {
+        $('#referrer_name').val($(this).text());
+        $('#referred_by_member_id').val($(this).data('id'));
+        $('#referrer_suggestions').empty();
+    });
+    $(document).click(function(e) {
+        if (!$(e.target).closest('#referrer_name, #referrer_suggestions').length) {
+            $('#referrer_suggestions').empty();
+        }
+    });
+
+    // Manuel puan ekle/çıkar için hangi butona basıldığını yakala
+    $('#adjustPointsForm button[type=submit]').click(function(e) {
+        e.preventDefault();
+        var form = $('#adjustPointsForm');
+        var data = form.serializeArray();
+        data.push({name: 'action', value: $(this).val()}); // Tıklanan butonun value'sunu ekle
+        var resultDiv = $('#adjustPointsResult');
+        $.post('/members/adjust_points', $.param(data), function(resp) {
+            resultDiv.html('<div class="alert alert-success">Puan işlemi başarılı!</div>');
+            setTimeout(function(){ location.reload(); }, 1000);
+        }).fail(function(xhr) {
+            resultDiv.html('<div class="alert alert-danger">Hata: ' + xhr.responseText + '</div>');
+        });
+    });
+});
+</script>
+{% endblock %} 

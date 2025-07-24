@@ -1,0 +1,198 @@
+{% extends "base.html" %}
+
+{% block title %}Bilet Satışları - {{ club_name }}{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+    <h1 class="h2"><i class="fas fa-ticket-alt"></i> Bilet Satışları</h1>
+    <a href="{{ url_for('index') }}" class="btn btn-secondary">
+        <i class="fas fa-arrow-left"></i> Ana Sayfa
+    </a>
+</div>
+
+<div class="row">
+    <div class="col-md-6">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="mb-0"><i class="fas fa-shopping-cart"></i> Yeni Bilet Satışı</h5>
+            </div>
+            <div class="card-body">
+                <form method="POST">
+                    <div class="mb-3">
+                        <label for="member_search" class="form-label">Üye UID veya İsim *</label>
+                        <input type="text" class="form-control" id="member_search" name="member_search" maxlength="50" placeholder="Üyenin UID'sini veya ismini girin" required autocomplete="off">
+                        <div class="form-text">Üyenin kartını okutun, UID veya ismini yazın. (En az 2 karakterde isim için öneri çıkar)</div>
+                        <div id="memberSuggestions" class="list-group position-absolute w-100" style="z-index:10;"></div>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="event_id" class="form-label">Etkinlik *</label>
+                        <select class="form-select" id="event_id" name="event_id" required>
+                            <option value="">Etkinlik seçin</option>
+                            {% for event in events %}
+                                <option value="{{ event.id }}">
+                                    {{ event.name }} - {{ event.event_date.strftime('%d.%m.%Y') if event.event_date else 'Tarih belirsiz' }}
+                                </option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label for="ticket_type" class="form-label">Bilet Türü</label>
+                            <select class="form-select" id="ticket_type" name="ticket_type">
+                                <option value="Standart">Standart</option>
+                                <option value="VIP">VIP</option>
+                                <option value="Öğrenci">Öğrenci</option>
+                                <option value="İndirimli">İndirimli</option>
+                            </select>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label for="price_paid" class="form-label">Ödenen Tutar (TL)</label>
+                            <input type="number" class="form-control" id="price_paid" name="price_paid" 
+                                   step="0.01" min="0" placeholder="0.00">
+                        </div>
+                    </div>
+                    
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label for="payment_method" class="form-label">Ödeme Yöntemi</label>
+                            <select class="form-select" id="payment_method" name="payment_method">
+                                <option value="">Seçiniz</option>
+                                <option value="Nakit">Nakit</option>
+                                <option value="Kredi Kartı">Kredi Kartı</option>
+                                <option value="Banka Kartı">Banka Kartı</option>
+                                <option value="Havale">Havale</option>
+                                <option value="Ücretsiz">Ücretsiz</option>
+                            </select>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label for="notes" class="form-label">Notlar</label>
+                            <input type="text" class="form-control" id="notes" name="notes" 
+                                   placeholder="Ek notlar...">
+                        </div>
+                    </div>
+                    
+                    <button type="submit" class="btn btn-success w-100">
+                        <i class="fas fa-save"></i> Satışı Kaydet
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-6">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="mb-0"><i class="fas fa-info-circle"></i> Bilet Satış Sistemi</h5>
+            </div>
+            <div class="card-body">
+                <div class="alert alert-success">
+                    <h6><i class="fas fa-star"></i> Puan Sistemi:</h6>
+                    <ul class="mb-0">
+                        <li>Her bilet satışı: <strong>+5 puan</strong></li>
+                        <li>Puanlar otomatik olarak eklenir</li>
+                        <li>Birden fazla bilet alınabilir</li>
+                    </ul>
+                </div>
+                
+                <div class="alert alert-info">
+                    <h6><i class="fas fa-exclamation-triangle"></i> Önemli Notlar:</h6>
+                    <ul class="mb-0">
+                        <li>UID benzersiz olmalıdır</li>
+                        <li>Üye sistemde kayıtlı olmalıdır</li>
+                        <li>Etkinlik aktif olmalıdır</li>
+                        <li>Fiyat bilgisi isteğe bağlıdır</li>
+                    </ul>
+                </div>
+                
+                <div class="alert alert-warning">
+                    <h6><i class="fas fa-lightbulb"></i> İpucu:</h6>
+                    <p class="mb-0">Hızlı satış için üye kartını okutun ve etkinliği seçin.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Son Satışlar -->
+<div class="row mt-4">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="mb-0"><i class="fas fa-history"></i> Son Satışlar</h5>
+            </div>
+            <div class="card-body">
+                {% if recent_sales %}
+                    <div class="table-responsive">
+                        <table class="table table-striped table-hover">
+                            <thead>
+                                <tr>
+                                    <th>Tarih</th>
+                                    <th>Üye</th>
+                                    <th>Etkinlik</th>
+                                    <th>Bilet Türü</th>
+                                    <th>Tutar</th>
+                                    <th>Ödeme</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for sale in recent_sales %}
+                                <tr>
+                                    <td>
+                                        <small>{{ sale.sale_timestamp.strftime('%d.%m.%Y %H:%M') if sale.sale_timestamp else '-' }}</small>
+                                    </td>
+                                    <td>{{ sale.member_name }}</td>
+                                    <td>{{ sale.event_name }}</td>
+                                    <td>
+                                        <span class="badge bg-info">{{ sale.ticket_type }}</span>
+                                    </td>
+                                    <td>
+                                        {% if sale.price_paid %}
+                                            <span class="badge bg-success">{{ "%.2f"|format(sale.price_paid) }} TL</span>
+                                        {% else %}
+                                            <span class="badge bg-secondary">Ücretsiz</span>
+                                        {% endif %}
+                                    </td>
+                                    <td>{{ sale.payment_method or '-' }}</td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                {% else %}
+                    <div class="text-center py-3">
+                        <i class="fas fa-ticket-alt fa-2x text-muted mb-2"></i>
+                        <p class="text-muted">Henüz bilet satışı bulunmuyor.</p>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+// Autocomplete için örnek JS (API endpoint'iniz varsa oraya bağlayın)
+document.getElementById('member_search').addEventListener('input', function() {
+    const val = this.value.trim();
+    if(val.length < 2) { document.getElementById('memberSuggestions').innerHTML = ''; return; }
+    fetch(`/api/member_search?q=${encodeURIComponent(val)}`)
+        .then(r => r.json())
+        .then(data => {
+            let html = '';
+            data.forEach(m => {
+                html += `<button type='button' class='list-group-item list-group-item-action' data-uid='${m.uid}'>${m.name} <small class='text-muted'>(${m.uid})</small></button>`;
+            });
+            document.getElementById('memberSuggestions').innerHTML = html;
+        });
+});
+document.getElementById('memberSuggestions').addEventListener('click', function(e) {
+    if(e.target && e.target.dataset.uid) {
+        document.getElementById('member_search').value = e.target.dataset.uid;
+        this.innerHTML = '';
+    }
+});
+</script>
+{% endblock %} 

@@ -1,0 +1,99 @@
+{% extends "base.html" %}
+
+{% block title %}Yeni Etkinlik - {{ club_name }}{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+    <h1 class="h2"><i class="fas fa-calendar-plus"></i> Yeni Etkinlik</h1>
+    <a href="{{ url_for('events') }}" class="btn btn-secondary">
+        <i class="fas fa-arrow-left"></i> Geri
+    </a>
+</div>
+
+<div class="row">
+    <div class="col-md-8">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="mb-0"><i class="fas fa-calendar"></i> Etkinlik Bilgileri</h5>
+            </div>
+            <div class="card-body">
+                <form method="POST">
+                    <div class="row">
+                        <div class="col-md-8 mb-3">
+                            <label for="name" class="form-label">Etkinlik Adı *</label>
+                            <input type="text" class="form-control" id="name" name="name" required>
+                        </div>
+                        <div class="col-md-4 mb-3">
+                            <label for="event_date" class="form-label">Tarih *</label>
+                            <input type="date" class="form-control" id="event_date" name="event_date" required>
+                        </div>
+                    </div>
+                    
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label for="location" class="form-label">Konum</label>
+                            <input type="text" class="form-control" id="location" name="location" 
+                                   placeholder="Etkinlik konumu">
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label for="category" class="form-label">Kategori</label>
+                            <select class="form-select" id="category" name="category">
+                                <option value="">Seçiniz</option>
+                                <option value="Konferans">Konferans</option>
+                                <option value="Workshop">Workshop</option>
+                                <option value="Seminer">Seminer</option>
+                                <option value="Sosyal Etkinlik">Sosyal Etkinlik</option>
+                                <option value="Eğitim">Eğitim</option>
+                                <option value="Diğer">Diğer</option>
+                            </select>
+                        </div>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="description" class="form-label">Açıklama</label>
+                        <textarea class="form-control" id="description" name="description" rows="4" 
+                                  placeholder="Etkinlik hakkında detaylı bilgi..."></textarea>
+                    </div>
+                    
+                    <div class="d-flex justify-content-between">
+                        <a href="{{ url_for('events') }}" class="btn btn-secondary">
+                            <i class="fas fa-times"></i> İptal
+                        </a>
+                        <button type="submit" class="btn btn-primary">
+                            <i class="fas fa-save"></i> Kaydet
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-4">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="mb-0"><i class="fas fa-info-circle"></i> Bilgi</h5>
+            </div>
+            <div class="card-body">
+                <div class="alert alert-info">
+                    <h6><i class="fas fa-exclamation-triangle"></i> Önemli Notlar:</h6>
+                    <ul class="mb-0">
+                        <li>Etkinlik adı benzersiz olmalıdır</li>
+                        <li>Tarih zorunludur</li>
+                        <li>Konum ve kategori isteğe bağlıdır</li>
+                        <li>Etkinlik oluşturulduktan sonra katılım kaydedilebilir</li>
+                    </ul>
+                </div>
+                
+                <div class="alert alert-success">
+                    <h6><i class="fas fa-star"></i> Katılım Sistemi:</h6>
+                    <ul class="mb-0">
+                        <li>Etkinliğe katılan üyeler +10 puan alır</li>
+                        <li>Katılım kaydı UID ile yapılır</li>
+                        <li>Bilet satışları ayrıca kaydedilir</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %} 

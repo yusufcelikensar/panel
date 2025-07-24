@@ -1,0 +1,227 @@
+{% extends "base.html" %}
+
+{% block title %}Ana Sayfa - {{ club_name }}{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-4">
+    <h1 class="h2 fw-bold text-gradient">
+        <i class="fas fa-home"></i> Ana Sayfa
+    </h1>
+</div>
+
+<!-- İstatistik Kartları -->
+<div class="row g-4 mb-4">
+    <div class="col-md-3">
+        <div class="stats-card">
+            <div class="stats-icon bg-primary">
+                <i class="fas fa-users"></i>
+            </div>
+            <div class="stats-content">
+                <div class="stats-number">{{ total_members }}</div>
+                <div class="stats-label">Toplam Üye</div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="stats-card">
+            <div class="stats-icon bg-success">
+                <i class="fas fa-calendar-check"></i>
+            </div>
+            <div class="stats-content">
+                <div class="stats-number">{{ total_events }}</div>
+                <div class="stats-label">Toplam Etkinlik</div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="stats-card">
+            <div class="stats-icon bg-info">
+                <i class="fas fa-clipboard-check"></i>
+            </div>
+            <div class="stats-content">
+                <div class="stats-number">{{ total_attendances }}</div>
+                <div class="stats-label">Toplam Katılım</div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="stats-card">
+            <div class="stats-icon bg-warning">
+                <i class="fas fa-ticket-alt"></i>
+            </div>
+            <div class="stats-content">
+                <div class="stats-number">{{ total_sales }}</div>
+                <div class="stats-label">Bilet Satışı</div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Hızlı İşlemler -->
+<div class="row mb-4">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-header d-flex justify-content-between align-items-center">
+                <h5 class="mb-0"><i class="fas fa-bolt"></i> Hızlı İşlemler</h5>
+            </div>
+            <div class="card-body">
+                <div class="row g-3">
+                    <div class="col-md-3">
+                        <a href="{{ url_for('add_member') }}" class="btn btn-primary w-100 h-100 d-flex flex-column align-items-center justify-content-center py-4">
+                            <i class="fas fa-user-plus fa-2x mb-2"></i>
+                            <span>Yeni Üye Ekle</span>
+                        </a>
+                    </div>
+                    <div class="col-md-3">
+                        <a href="{{ url_for('add_event') }}" class="btn btn-success w-100 h-100 d-flex flex-column align-items-center justify-content-center py-4">
+                            <i class="fas fa-calendar-plus fa-2x mb-2"></i>
+                            <span>Yeni Etkinlik</span>
+                        </a>
+                    </div>
+                    <div class="col-md-3">
+                        <a href="{{ url_for('attendance') }}" class="btn btn-info w-100 h-100 d-flex flex-column align-items-center justify-content-center py-4">
+                            <i class="fas fa-check-circle fa-2x mb-2"></i>
+                            <span>Katılım Kaydet</span>
+                        </a>
+                    </div>
+                    <div class="col-md-3">
+                        <a href="{{ url_for('ticket_sales') }}" class="btn btn-warning w-100 h-100 d-flex flex-column align-items-center justify-content-center py-4">
+                            <i class="fas fa-ticket-alt fa-2x mb-2"></i>
+                            <span>Bilet Satışı</span>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row g-4">
+    <!-- Yaklaşan Etkinlikler -->
+    <div class="col-md-6">
+        <div class="card h-100">
+            <div class="card-header d-flex justify-content-between align-items-center">
+                <h5 class="mb-0"><i class="fas fa-calendar-alt"></i> Yaklaşan Etkinlikler</h5>
+            </div>
+            <div class="card-body">
+                {% if upcoming_events %}
+                    <div class="list-group list-group-flush">
+                        {% for event in upcoming_events %}
+                        <div class="list-group-item d-flex justify-content-between align-items-center p-3">
+                            <div>
+                                <h6 class="mb-1 fw-semibold">{{ event.name }}</h6>
+                                <small class="text-muted">
+                                    <i class="fas fa-map-marker-alt"></i> {{ event.location or 'Belirtilmemiş' }}
+                                </small>
+                            </div>
+                            <span class="badge bg-primary">
+                                {{ event.event_date.strftime('%d.%m.%Y') if event.event_date else 'Tarih belirsiz' }}
+                            </span>
+                        </div>
+                        {% endfor %}
+                    </div>
+                {% else %}
+                    <div class="text-center py-5">
+                        <i class="fas fa-calendar fa-3x text-muted mb-3"></i>
+                        <h5 class="text-muted">Yaklaşan etkinlik bulunmuyor</h5>
+                        <p class="text-muted">İlk etkinliği eklemek için "Yeni Etkinlik" butonuna tıklayın.</p>
+                        <a href="{{ url_for('add_event') }}" class="btn btn-primary">
+                            <i class="fas fa-calendar-plus"></i> Yeni Etkinlik
+                        </a>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+
+    <!-- Liderlik Tablosu -->
+    <div class="col-md-6">
+        <div class="card h-100">
+            <div class="card-header d-flex justify-content-between align-items-center">
+                <h5 class="mb-0"><i class="fas fa-trophy"></i> Liderlik Tablosu</h5>
+            </div>
+            <div class="card-body">
+                {% if leaderboard %}
+                    <div class="table-responsive">
+                        <table class="table table-hover">
+                            <thead>
+                                <tr>
+                                    <th style="width: 50px">#</th>
+                                    <th>Üye</th>
+                                    <th>Bölüm</th>
+                                    <th class="text-end">Puan</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for member in leaderboard %}
+                                <tr>
+                                    <td>
+                                        <span class="badge bg-primary rounded-pill">{{ loop.index }}</span>
+                                    </td>
+                                    <td class="fw-semibold">{{ member.name }}</td>
+                                    <td class="text-muted">{{ member.department or '-' }}</td>
+                                    <td class="text-end">
+                                        <span class="badge bg-success">{{ member.points }}</span>
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                {% else %}
+                    <div class="text-center py-5">
+                        <i class="fas fa-trophy fa-3x text-muted mb-3"></i>
+                        <h5 class="text-muted">Henüz puan verisi bulunmuyor</h5>
+                        <p class="text-muted">Üyeler etkinliklere katıldıkça puanları görüntülenecek.</p>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+.text-gradient {
+    background: linear-gradient(45deg, var(--primary), var(--secondary));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+.bg-primary { background-color: var(--primary) !important; }
+.bg-success { background-color: var(--success) !important; }
+.bg-info { background-color: #0EA5E9 !important; }
+.bg-warning { background-color: #F59E0B !important; }
+
+.btn {
+    transition: all 0.3s ease;
+}
+
+.btn:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-md);
+}
+
+.list-group-item {
+    transition: all 0.2s ease;
+    border: none;
+    border-bottom: 1px solid rgba(0,0,0,0.05);
+}
+
+.list-group-item:last-child {
+    border-bottom: none;
+}
+
+.list-group-item:hover {
+    background: rgba(14,165,233,0.05);
+}
+
+.table > :not(caption) > * > * {
+    padding: 1rem;
+}
+
+.badge {
+    font-weight: 500;
+    letter-spacing: 0.3px;
+}
+</style>
+{% endblock %} 

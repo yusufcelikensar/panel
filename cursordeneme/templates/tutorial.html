@@ -1,0 +1,587 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="tutorial-page">
+    <div class="tutorial-header text-center mb-5">
+        <h1 class="display-4 fw-bold text-gradient mb-3">
+            <i class="fas fa-graduation-cap"></i> Kullanım Kılavuzu
+        </h1>
+        <p class="lead text-muted">Bu sistem ile üye yönetimi, etkinlik organizasyonu, katılım takibi ve raporlama işlemlerinizi kolayca yapabilirsiniz.</p>
+    </div>
+    
+    <!-- Navigation Tabs -->
+    <div class="tutorial-tabs mb-4">
+        <ul class="nav nav-pills nav-fill" role="tablist">
+            <li class="nav-item" role="presentation">
+                <button class="nav-link active" data-bs-toggle="tab" data-bs-target="#tutorial-overview" type="button" role="tab">
+                    <i class="fas fa-home"></i> Genel Bakış
+                </button>
+            </li>
+            <li class="nav-item" role="presentation">
+                <button class="nav-link" data-bs-toggle="tab" data-bs-target="#tutorial-members" type="button" role="tab">
+                    <i class="fas fa-users"></i> Üye Yönetimi
+                </button>
+            </li>
+            <li class="nav-item" role="presentation">
+                <button class="nav-link" data-bs-toggle="tab" data-bs-target="#tutorial-events" type="button" role="tab">
+                    <i class="fas fa-calendar-alt"></i> Etkinlik Yönetimi
+                </button>
+            </li>
+            <li class="nav-item" role="presentation">
+                <button class="nav-link" data-bs-toggle="tab" data-bs-target="#tutorial-attendance" type="button" role="tab">
+                    <i class="fas fa-clipboard-check"></i> Katılım Takibi
+                </button>
+            </li>
+            <li class="nav-item" role="presentation">
+                <button class="nav-link" data-bs-toggle="tab" data-bs-target="#tutorial-tickets" type="button" role="tab">
+                    <i class="fas fa-ticket-alt"></i> Bilet Satışı
+                </button>
+            </li>
+            <li class="nav-item" role="presentation">
+                <button class="nav-link" data-bs-toggle="tab" data-bs-target="#tutorial-reports" type="button" role="tab">
+                    <i class="fas fa-chart-bar"></i> Raporlar
+                </button>
+            </li>
+        </ul>
+    </div>
+
+    <!-- Tab Content -->
+    <div class="tab-content">
+        <!-- Genel Bakış -->
+        <div class="tab-pane fade show active" id="tutorial-overview" role="tabpanel">
+            <div class="row g-4">
+                <div class="col-md-6">
+                    <div class="card h-100 tutorial-card">
+                        <div class="card-body">
+                            <div class="d-flex align-items-center mb-4">
+                                <div class="tutorial-icon bg-primary">
+                                    <i class="fas fa-rocket"></i>
+                                </div>
+                                <h3 class="card-title mb-0 ms-3">Hızlı Başlangıç</h3>
+                            </div>
+                            <div class="tutorial-steps">
+                                <div class="step">
+                                    <span class="step-number">1</span>
+                                    <div class="step-content">
+                                        <h5>Üye Yönetimi</h5>
+                                        <p>Üyelerinizi ekleyin ve yönetin. Her üye için UID, isim ve bölüm bilgilerini kaydedin.</p>
+                                    </div>
+                                </div>
+                                <div class="step">
+                                    <span class="step-number">2</span>
+                                    <div class="step-content">
+                                        <h5>Etkinlik Oluşturma</h5>
+                                        <p>Etkinliklerinizi planlayın, tarih ve konum belirleyin, katılımcı sayısını takip edin.</p>
+                                    </div>
+                                </div>
+                                <div class="step">
+                                    <span class="step-number">3</span>
+                                    <div class="step-content">
+                                        <h5>Katılım Takibi</h5>
+                                        <p>Etkinliklere katılan üyeleri kaydedin ve puan sistemini otomatik olarak güncelleyin.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="card h-100 tutorial-card">
+                        <div class="card-body">
+                            <div class="d-flex align-items-center mb-4">
+                                <div class="tutorial-icon bg-success">
+                                    <i class="fas fa-star"></i>
+                                </div>
+                                <h3 class="card-title mb-0 ms-3">Puan Sistemi</h3>
+                            </div>
+                            <div class="tutorial-features">
+                                <div class="feature">
+                                    <i class="fas fa-check-circle text-success"></i>
+                                    <span>Etkinlik katılımı: +10 puan</span>
+                                </div>
+                                <div class="feature">
+                                    <i class="fas fa-check-circle text-success"></i>
+                                    <span>Bilet satın alma: +5 puan</span>
+                                </div>
+                                <div class="feature">
+                                    <i class="fas fa-check-circle text-success"></i>
+                                    <span>Referans: +15 puan</span>
+                                </div>
+                                <div class="feature">
+                                    <i class="fas fa-check-circle text-success"></i>
+                                    <span>Manuel puan ekleme/çıkarma</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Üye Yönetimi -->
+        <div class="tab-pane fade" id="tutorial-members" role="tabpanel">
+            <div class="row g-4">
+                <div class="col-md-8">
+                    <div class="card tutorial-card">
+                        <div class="card-body">
+                            <div class="d-flex align-items-center mb-4">
+                                <div class="tutorial-icon bg-primary">
+                                    <i class="fas fa-users"></i>
+                                </div>
+                                <h3 class="card-title mb-0 ms-3">Üye Yönetimi Rehberi</h3>
+                            </div>
+                            <div class="tutorial-content">
+                                <h5 class="mb-3">Yeni Üye Ekleme</h5>
+                                <ol class="tutorial-list">
+                                    <li>Sol menüden "Üyeler" bölümüne gidin</li>
+                                    <li>"Yeni Üye Ekle" butonuna tıklayın</li>
+                                    <li>Üye bilgilerini doldurun:
+                                        <ul>
+                                            <li>Ad Soyad (zorunlu)</li>
+                                            <li>UID (zorunlu, 11 haneli)</li>
+                                            <li>E-posta (isteğe bağlı)</li>
+                                            <li>Telefon (isteğe bağlı)</li>
+                                            <li>Bölüm (isteğe bağlı)</li>
+                                            <li>Fotoğraf (isteğe bağlı)</li>
+                                        </ul>
+                                    </li>
+                                    <li>Referans üye seçin (isteğe bağlı)</li>
+                                    <li>"Kaydet" butonuna tıklayın</li>
+                                </ol>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="card tutorial-card">
+                        <div class="card-body">
+                            <div class="d-flex align-items-center mb-4">
+                                <div class="tutorial-icon bg-info">
+                                    <i class="fas fa-lightbulb"></i>
+                                </div>
+                                <h3 class="card-title mb-0 ms-3">İpuçları</h3>
+                            </div>
+                            <div class="tutorial-tips">
+                                <div class="tip">
+                                    <i class="fas fa-info-circle text-info"></i>
+                                    <p>UID benzersiz olmalıdır</p>
+                                </div>
+                                <div class="tip">
+                                    <i class="fas fa-info-circle text-info"></i>
+                                    <p>Referans üye seçerek puan sistemi başlatın</p>
+                                </div>
+                                <div class="tip">
+                                    <i class="fas fa-info-circle text-info"></i>
+                                    <p>Üye fotoğrafı için önerilen boyut: 300x300px</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Etkinlik Yönetimi -->
+        <div class="tab-pane fade" id="tutorial-events" role="tabpanel">
+            <div class="row g-4">
+                <div class="col-md-8">
+                    <div class="card tutorial-card">
+                        <div class="card-body">
+                            <div class="d-flex align-items-center mb-4">
+                                <div class="tutorial-icon bg-success">
+                                    <i class="fas fa-calendar-alt"></i>
+                                </div>
+                                <h3 class="card-title mb-0 ms-3">Etkinlik Yönetimi Rehberi</h3>
+                            </div>
+                            <div class="tutorial-content">
+                                <h5 class="mb-3">Yeni Etkinlik Oluşturma</h5>
+                                <ol class="tutorial-list">
+                                    <li>Sol menüden "Etkinlikler" bölümüne gidin</li>
+                                    <li>"Yeni Etkinlik" butonuna tıklayın</li>
+                                    <li>Etkinlik bilgilerini doldurun:
+                                        <ul>
+                                            <li>Etkinlik Adı (zorunlu)</li>
+                                            <li>Tarih (zorunlu)</li>
+                                            <li>Konum (zorunlu)</li>
+                                            <li>Kategori (isteğe bağlı)</li>
+                                            <li>Açıklama (isteğe bağlı)</li>
+                                        </ul>
+                                    </li>
+                                    <li>"Kaydet" butonuna tıklayın</li>
+                                </ol>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="card tutorial-card">
+                        <div class="card-body">
+                            <div class="d-flex align-items-center mb-4">
+                                <div class="tutorial-icon bg-warning">
+                                    <i class="fas fa-exclamation-triangle"></i>
+                                </div>
+                                <h3 class="card-title mb-0 ms-3">Önemli Notlar</h3>
+                            </div>
+                            <div class="tutorial-tips">
+                                <div class="tip">
+                                    <i class="fas fa-check-circle text-success"></i>
+                                    <p>Etkinlik tarihi geçmiş bir tarih olamaz</p>
+                                </div>
+                                <div class="tip">
+                                    <i class="fas fa-check-circle text-success"></i>
+                                    <p>Etkinlik silindiğinde katılım kayıtları da silinir</p>
+                                </div>
+                                <div class="tip">
+                                    <i class="fas fa-check-circle text-success"></i>
+                                    <p>Etkinlik düzenlenebilir ve güncellenebilir</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Katılım Takibi -->
+        <div class="tab-pane fade" id="tutorial-attendance" role="tabpanel">
+            <div class="row g-4">
+                <div class="col-md-8">
+                    <div class="card tutorial-card">
+                        <div class="card-body">
+                            <div class="d-flex align-items-center mb-4">
+                                <div class="tutorial-icon bg-info">
+                                    <i class="fas fa-clipboard-check"></i>
+                                </div>
+                                <h3 class="card-title mb-0 ms-3">Katılım Takibi Rehberi</h3>
+                            </div>
+                            <div class="tutorial-content">
+                                <h5 class="mb-3">Katılım Kaydetme</h5>
+                                <ol class="tutorial-list">
+                                    <li>Sol menüden "Yoklama" bölümüne gidin</li>
+                                    <li>Üye UID'sini girin veya kartı okutun</li>
+                                    <li>Etkinliği seçin</li>
+                                    <li>"Kaydet" butonuna tıklayın</li>
+                                    <li>Katılım başarıyla kaydedildiğinde bildirim alacaksınız</li>
+                                </ol>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="card tutorial-card">
+                        <div class="card-body">
+                            <div class="d-flex align-items-center mb-4">
+                                <div class="tutorial-icon bg-primary">
+                                    <i class="fas fa-info-circle"></i>
+                                </div>
+                                <h3 class="card-title mb-0 ms-3">Bilgi</h3>
+                            </div>
+                            <div class="tutorial-tips">
+                                <div class="tip">
+                                    <i class="fas fa-check-circle text-success"></i>
+                                    <p>Her katılım +10 puan kazandırır</p>
+                                </div>
+                                <div class="tip">
+                                    <i class="fas fa-check-circle text-success"></i>
+                                    <p>Aynı etkinliğe tekrar katılım kaydedilemez</p>
+                                </div>
+                                <div class="tip">
+                                    <i class="fas fa-check-circle text-success"></i>
+                                    <p>Katılım kayıtları silinebilir</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Bilet Satışı -->
+        <div class="tab-pane fade" id="tutorial-tickets" role="tabpanel">
+            <div class="row g-4">
+                <div class="col-md-8">
+                    <div class="card tutorial-card">
+                        <div class="card-body">
+                            <div class="d-flex align-items-center mb-4">
+                                <div class="tutorial-icon bg-warning">
+                                    <i class="fas fa-ticket-alt"></i>
+                                </div>
+                                <h3 class="card-title mb-0 ms-3">Bilet Satışı Rehberi</h3>
+                            </div>
+                            <div class="tutorial-content">
+                                <h5 class="mb-3">Bilet Satışı Yapma</h5>
+                                <ol class="tutorial-list">
+                                    <li>Sol menüden "Bilet Satış" bölümüne gidin</li>
+                                    <li>Üye UID'sini girin veya kartı okutun</li>
+                                    <li>Etkinliği seçin</li>
+                                    <li>Bilet türünü seçin</li>
+                                    <li>Ödeme yöntemini seçin</li>
+                                    <li>"Satış Yap" butonuna tıklayın</li>
+                                </ol>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="card tutorial-card">
+                        <div class="card-body">
+                            <div class="d-flex align-items-center mb-4">
+                                <div class="tutorial-icon bg-success">
+                                    <i class="fas fa-star"></i>
+                                </div>
+                                <h3 class="card-title mb-0 ms-3">Puan Sistemi</h3>
+                            </div>
+                            <div class="tutorial-tips">
+                                <div class="tip">
+                                    <i class="fas fa-check-circle text-success"></i>
+                                    <p>Her bilet satışı +5 puan kazandırır</p>
+                                </div>
+                                <div class="tip">
+                                    <i class="fas fa-check-circle text-success"></i>
+                                    <p>Bilet satışları raporlanabilir</p>
+                                </div>
+                                <div class="tip">
+                                    <i class="fas fa-check-circle text-success"></i>
+                                    <p>Satış geçmişi görüntülenebilir</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Raporlar -->
+        <div class="tab-pane fade" id="tutorial-reports" role="tabpanel">
+            <div class="row g-4">
+                <div class="col-md-8">
+                    <div class="card tutorial-card">
+                        <div class="card-body">
+                            <div class="d-flex align-items-center mb-4">
+                                <div class="tutorial-icon bg-primary">
+                                    <i class="fas fa-chart-bar"></i>
+                                </div>
+                                <h3 class="card-title mb-0 ms-3">Raporlar Rehberi</h3>
+                            </div>
+                            <div class="tutorial-content">
+                                <h5 class="mb-3">Rapor Oluşturma</h5>
+                                <ol class="tutorial-list">
+                                    <li>Sol menüden "Raporlar" bölümüne gidin</li>
+                                    <li>Rapor türünü seçin:
+                                        <ul>
+                                            <li>Üye Raporu</li>
+                                            <li>Etkinlik Raporu</li>
+                                            <li>Katılım Raporu</li>
+                                            <li>Bilet Satış Raporu</li>
+                                        </ul>
+                                    </li>
+                                    <li>Tarih aralığını seçin</li>
+                                    <li>"Rapor Oluştur" butonuna tıklayın</li>
+                                </ol>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="card tutorial-card">
+                        <div class="card-body">
+                            <div class="d-flex align-items-center mb-4">
+                                <div class="tutorial-icon bg-info">
+                                    <i class="fas fa-download"></i>
+                                </div>
+                                <h3 class="card-title mb-0 ms-3">Dışa Aktarma</h3>
+                            </div>
+                            <div class="tutorial-tips">
+                                <div class="tip">
+                                    <i class="fas fa-file-excel text-success"></i>
+                                    <p>Excel formatında dışa aktarabilirsiniz</p>
+                                </div>
+                                <div class="tip">
+                                    <i class="fas fa-file-pdf text-danger"></i>
+                                    <p>PDF formatında dışa aktarabilirsiniz</p>
+                                </div>
+                                <div class="tip">
+                                    <i class="fas fa-envelope text-primary"></i>
+                                    <p>E-posta listesi oluşturabilirsiniz</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+.tutorial-page {
+    padding: 2rem 0;
+}
+
+.tutorial-header {
+    margin-bottom: 3rem;
+}
+
+.text-gradient {
+    background: linear-gradient(45deg, var(--primary), var(--secondary));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+.tutorial-tabs .nav-pills {
+    background: var(--card);
+    padding: 0.5rem;
+    border-radius: var(--radius-md);
+    box-shadow: var(--shadow-sm);
+}
+
+.tutorial-tabs .nav-link {
+    color: var(--body);
+    border-radius: var(--radius-sm);
+    padding: 0.75rem 1.5rem;
+    font-weight: 500;
+    transition: var(--transition);
+}
+
+.tutorial-tabs .nav-link i {
+    margin-right: 0.5rem;
+}
+
+.tutorial-tabs .nav-link:hover {
+    background: rgba(14,165,233,0.1);
+    color: var(--primary);
+}
+
+.tutorial-tabs .nav-link.active {
+    background: var(--primary);
+    color: white;
+}
+
+.tutorial-card {
+    border: none;
+    border-radius: var(--radius-md);
+    box-shadow: var(--shadow-sm);
+    transition: var(--transition);
+}
+
+.tutorial-card:hover {
+    box-shadow: var(--shadow-md);
+    transform: translateY(-2px);
+}
+
+.tutorial-icon {
+    width: 48px;
+    height: 48px;
+    border-radius: var(--radius-sm);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.5rem;
+    color: white;
+    box-shadow: var(--shadow-sm);
+}
+
+.tutorial-steps {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+}
+
+.step {
+    display: flex;
+    align-items: flex-start;
+    gap: 1rem;
+}
+
+.step-number {
+    width: 32px;
+    height: 32px;
+    background: var(--primary);
+    color: white;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 600;
+    flex-shrink: 0;
+}
+
+.step-content h5 {
+    margin-bottom: 0.5rem;
+    color: var(--heading);
+}
+
+.step-content p {
+    color: var(--body);
+    margin: 0;
+}
+
+.tutorial-features {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.feature {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    color: var(--body);
+}
+
+.feature i {
+    font-size: 1.1rem;
+}
+
+.tutorial-list {
+    padding-left: 1.5rem;
+    margin-bottom: 0;
+}
+
+.tutorial-list li {
+    margin-bottom: 1rem;
+    color: var(--body);
+}
+
+.tutorial-list li:last-child {
+    margin-bottom: 0;
+}
+
+.tutorial-list ul {
+    margin-top: 0.5rem;
+    margin-bottom: 0;
+    padding-left: 1.5rem;
+}
+
+.tutorial-tips {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.tip {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.75rem;
+}
+
+.tip i {
+    font-size: 1.1rem;
+    margin-top: 0.25rem;
+}
+
+.tip p {
+    margin: 0;
+    color: var(--body);
+}
+
+.bg-primary { background-color: var(--primary) !important; }
+.bg-success { background-color: var(--success) !important; }
+.bg-info { background-color: #0EA5E9 !important; }
+.bg-warning { background-color: #F59E0B !important; }
+
+.text-success { color: var(--success) !important; }
+.text-danger { color: #EF4444 !important; }
+.text-primary { color: var(--primary) !important; }
+</style>
+{% endblock %} 

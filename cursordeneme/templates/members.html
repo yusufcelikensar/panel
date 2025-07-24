@@ -1,0 +1,148 @@
+{% extends "base.html" %}
+
+{% block title %}Üyeler - {{ club_name }}{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+    <h1 class="h2"><i class="fas fa-users"></i> Üyeler</h1>
+    <div class="d-flex gap-2">
+        <a href="{{ url_for('add_member') }}" class="btn btn-primary">
+            <i class="fas fa-user-plus"></i> Yeni Üye Ekle
+        </a>
+    </div>
+</div>
+
+<div class="card">
+    <div class="card-header">
+        <h5 class="mb-0"><i class="fas fa-list"></i> Üye Listesi</h5>
+    </div>
+    <div class="card-body">
+        <!-- Search Bar -->
+        <div class="mb-3">
+            <input type="text" id="memberSearchInput" class="form-control" placeholder="Üye ara... (Ad Soyad, UID, E-posta, Bölüm, Rol)">
+        </div>
+        {% if members %}
+            <div class="table-responsive">
+                <table class="table table-striped table-hover">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Ad Soyad</th>
+                            <th>UID</th>
+                            <th>E-posta</th>
+                            <th>Bölüm</th>
+                            <th>Rol</th>
+                            <th>Puan</th>
+                            <th>Katılım</th>
+                            <th>Bilet</th>
+                            <th>İşlemler</th>
+                        </tr>
+                    </thead>
+                    <tbody id="membersTableBody">
+                        {% for member in members %}
+                        <tr>
+                            <td>{{ member.id }}</td>
+                            <td>{{ member.name }}</td>
+                            <td><code>{{ member.uid }}</code></td>
+                            <td>{{ member.email or '-' }}</td>
+                            <td>{{ member.department or '-' }}</td>
+                            <td>
+                                <span class="badge bg-{{ 'primary' if member.role == 'Yönetici' else 'success' }}">
+                                    {{ member.role or 'Aktif Üye' }}
+                                </span>
+                            </td>
+                            <td>
+                                <span class="badge bg-warning text-dark">{{ member.points }}</span>
+                            </td>
+                            <td>
+                                <span class="badge bg-info">{{ member.events_attended }}</span>
+                            </td>
+                            <td>
+                                <span class="badge bg-secondary">{{ member.tickets_purchased }}</span>
+                            </td>
+                            <td>
+                                <div class="btn-group" role="group">
+                                    <a href="{{ url_for('edit_member', member_id=member.id) }}" 
+                                       class="btn btn-sm btn-outline-primary">
+                                        <i class="fas fa-edit"></i>
+                                    </a>
+                                    <button type="button" class="btn btn-sm btn-outline-danger" 
+                                            onclick="deleteMember({{ member.id }}, '{{ member.name }}')">
+                                        <i class="fas fa-trash"></i>
+                                    </button>
+                                </div>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        {% else %}
+            <div class="text-center py-5">
+                <i class="fas fa-users fa-3x text-muted mb-3"></i>
+                <h5 class="text-muted">Henüz üye bulunmuyor</h5>
+                <p class="text-muted">İlk üyeyi eklemek için "Yeni Üye Ekle" butonuna tıklayın.</p>
+                <a href="{{ url_for('add_member') }}" class="btn btn-primary">
+                    <i class="fas fa-user-plus"></i> Yeni Üye Ekle
+                </a>
+            </div>
+        {% endif %}
+    </div>
+</div>
+
+<!-- Silme Modal -->
+<div class="modal fade" id="deleteModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Üye Sil</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <p>Bu üyeyi silmek istediğinizden emin misiniz?</p>
+                <p><strong>Üye:</strong> <span id="memberName"></span></p>
+                <div class="alert alert-warning">
+                    <i class="fas fa-exclamation-triangle"></i>
+                    Bu işlem geri alınamaz!
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">İptal</button>
+                <form id="deleteForm" method="POST" style="display: inline;">
+                    <button type="submit" class="btn btn-danger">Sil</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}
+
+{% block scripts %}
+<script>
+function deleteMember(memberId, memberName) {
+    document.getElementById('memberName').textContent = memberName;
+    document.getElementById('deleteForm').action = `/members/${memberId}/delete`;
+    new bootstrap.Modal(document.getElementById('deleteModal')).show();
+}
+
+document.addEventListener('DOMContentLoaded', function() {
+    const searchInput = document.getElementById('memberSearchInput');
+    const tableBody = document.getElementById('membersTableBody');
+    if (searchInput && tableBody) {
+        searchInput.addEventListener('keyup', function() {
+            const filter = this.value.toLowerCase();
+            const rows = tableBody.getElementsByTagName('tr');
+            for (let i = 0; i < rows.length; i++) {
+                let rowText = rows[i].textContent.toLowerCase();
+                if (rowText.indexOf(filter) > -1) {
+                    rows[i].style.display = '';
+                } else {
+                    rows[i].style.display = 'none';
+                }
+            }
+        });
+    }
+});
+</script>
+{% endblock %} 
